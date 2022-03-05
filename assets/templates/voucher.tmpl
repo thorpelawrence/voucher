@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>New voucher - {{ .appName }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="screen"
+      href="static/assets/main.css"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎟️</text></svg>"
+    />
+  </head>
+  <body>
+    <nav>
+      <a href="/">Home</a>
+    </nav>
+    <h1>New voucher code generated</h1>
+    <p>
+      <code>{{ .code }}</code>
+    </p>
+    <p>Created: {{ .code.Time.Format "2/1/2006 3:04:05pm" }}</p>
+    <h2>Barcode</h2>
+    <img src="/barcode/{{ .code }}" />
+  </body>
+</html>

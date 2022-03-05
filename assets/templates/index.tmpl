@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Home - {{ .appName }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="screen"
+      href="static/assets/main.css"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎟️</text></svg>"
+    />
+  </head>
+  <body>
+    <nav>
+      <a href="/about">About</a>
+    </nav>
+    <h1>Welcome to 🎟️ {{ .appName }}!</h1>
+    
+    <h2>Issue a voucher</h2>
+    <form action="/voucher" method="post">
+      <input type="submit" value="Create a new voucher" />
+    </form>
+
+    <h2>Redeem a voucher</h2>
+    <form action="/redeem" method="post">
+      <input type="text" placeholder="Code" name="code" required />
+      <input type="submit" value="Redeem voucher code" />
+    </form>
+
+    <h2>Currently issued vouchers</h2>
+    <form action="/delete" method="post">
+      <table>
+        <tr>
+          <th>Delete</th>
+          <th>Code</th>
+          <th>Redeemed?</th>
+          <th>Created</th>
+          <th>Barcode</th>
+        </tr>
+        {{ range .vouchers }}
+        <tr>
+          <td>
+              <input type="checkbox" name="code" value="{{ .Code }}" />
+            </form>
+          </td>
+          <td>
+            <code>
+              {{ if .Redeemed }}
+                <s>{{ .Code }}</s>
+              {{ else }}
+                {{ .Code }}
+              {{ end }}
+            </code>
+          </td>
+          <td>
+            <input
+              type="checkbox"
+              disabled
+              {{ if .Redeemed }}
+              checked
+              {{ end }}
+            />
+          </td>
+          <td>{{ .Code.Time.Format "Mon 02/01/2006 03:04:05pm" }}</td>
+          <td><img src="/barcode/{{ .Code }}" /></td>
+        </tr>
+        {{ end }}
+      </table>
+      {{ if .vouchers }}
+        <br />
+        <input type="submit" value="Delete selected" />
+        <label>
+          <input type="checkbox" required />
+          Confirm delete
+        </label>
+      {{ end }}
+    </form>
+  </body>
+</html>
