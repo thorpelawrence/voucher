@@ -10,8 +10,9 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"strings"
 
-	"voucher/internal/database"
+	"github.com/thorpelawrence/voucher/internal/database"
 
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/code93"
@@ -133,6 +134,7 @@ func main() {
 
 	r.POST("/redeem", func(c *gin.Context) {
 		code := c.Request.FormValue("code")
+		code = strings.TrimSpace(code)
 		redeemStatus, err := db.RedeemVoucher(code)
 		if err != nil {
 			logError("failed to redeem voucher:", err)
@@ -167,18 +169,20 @@ func main() {
 		code := c.Params.ByName("code")
 		b, err := code93.Encode(code, true, true)
 		if err != nil {
-			logError("error encoding code93 barcode: %w", err)
+			logError(fmt.Printf("error encoding code93 barcode: %v", err))
 			c.Status(http.StatusInternalServerError)
 			return
 		}
-		b, err = barcode.Scale(b, 360, 60)
+		b, err = barcode.Scale(b, 365, 60)
 		if err != nil {
-			logError("error scaling barcode: %w", err)
+			logError(fmt.Printf("error scaling barcode: %v", err))
 			c.Status(http.StatusInternalServerError)
 			return
 		}
+		c.Header("Content-Type", "image/png")
+		c.Header("Cache-Control", "max-age=31536000")
 		if err := png.Encode(c.Writer, b); err != nil {
-			logError("failed encoding barcode png: %w", err)
+			logError(fmt.Printf("failed encoding barcode png: %v", err))
 			c.Status(http.StatusInternalServerError)
 			return
 		}

@@ -1,4 +1,4 @@
-module voucher
+module github.com/thorpelawrence/voucher
 
 go 1.17
 
